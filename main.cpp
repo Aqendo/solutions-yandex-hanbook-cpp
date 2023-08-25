@@ -1,83 +1,67 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
-#include <deque>
 #include <iostream>
-#include <list>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <deque>
+#include <list>
 
-int main() {
+int main()
+{
+    ;
     std::list<std::string> file;
     bool isFileContents = true;
-    std::string temp_line;
-    std::list<std::string> buffer;
+    std::string temp_line, buffer;
     auto iter = file.begin();
-    bool isShiftPressed = false;
-    int shiftOffset = 0;
-    while (std::getline(std::cin, temp_line)) {
-        if (isFileContents) {
+    while (std::getline(std::cin, temp_line))
+    {
+        if (isFileContents)
+        {
 
-            if (temp_line.empty()) {
+            if (temp_line.empty())
+            {
                 isFileContents = false;
                 iter = file.begin();
                 continue;
             }
             file.push_back(temp_line);
-        } else {
-            if (temp_line == "Up") {
-                if (iter != file.begin()) {
-                    if (isShiftPressed) {
-                        shiftOffset++;
-                    }
-                    iter--;
+        }
+        else
+        {
+            if (temp_line == "Down")
+            {
+                if (iter != file.end())
+                {
+                    ++iter;
                 }
-            } else if (temp_line == "Down") {
-                if (iter != file.end()) {
-                    if (isShiftPressed) {
-                        shiftOffset--;
-                    }
-                    iter++;
+                continue;
+            }
+            else if (temp_line == "Up")
+            {
+                if (iter == file.begin())
+                {
+                    continue;
                 }
-            } else if (temp_line == "Shift") {
-                isShiftPressed = !isShiftPressed;
-                shiftOffset = 0;
-            } else if (temp_line == "Ctrl+X") {
-                buffer.clear();
-                if (file.empty()) continue;
-                if (isShiftPressed) {
-                    auto from = iter;
-                    std::advance(from, shiftOffset);
-                    if (shiftOffset >= 0) {
-                        buffer.splice(buffer.begin(), file, iter, from);
-                    } else {
-                        buffer.splice(buffer.begin(), file, from, iter);
-                    }
-                } else {
-                    if (iter == file.end()) continue;
-                    buffer.push_back(*iter);
-                    iter = file.erase(iter);
-                }
-                isShiftPressed = false;
-                shiftOffset = 0;
-            } else if (temp_line == "Ctrl+V") {
-                if (isShiftPressed) {
-                    auto from = iter;
-                    std::advance(from, shiftOffset);
-                    if (shiftOffset >= 0) {
-                        iter = file.erase(iter, from);
-                    } else {
-                        iter = file.erase(from, iter);
-                    }
-                    isShiftPressed = false;
-                    shiftOffset = 0;
-                }
-
-                file.insert(iter, buffer.begin(), buffer.end());
+                --iter;
+            }
+            else if (temp_line == "Ctrl+X")
+            {
+                if (iter == file.end())
+                    continue;
+                buffer = *iter;
+                iter = file.erase(iter);
+            }
+            else if (temp_line == "Ctrl+V")
+            {
+                if (buffer.empty())
+                    continue;
+                file.insert(iter, buffer);
             }
         }
     }
-    for (std::string &s: file) {
+    for (std::string &s : file)
+    {
         std::cout << s << '\n';
     }
     return 0;
